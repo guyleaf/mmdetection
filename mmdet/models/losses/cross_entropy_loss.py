@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from mmdet.registry import MODELS
+
 from .utils import weight_reduce_loss
 
 
@@ -284,8 +285,11 @@ class CrossEntropyLoss(nn.Module):
             ignore_index = self.ignore_index
 
         if self.class_weight is not None:
-            class_weight = cls_score.new_tensor(
-                self.class_weight, device=cls_score.device)
+            class_weight = (
+                self.class_weight.clone()
+                .detach()
+                .to(device=cls_score.device, dtype=cls_score.dtype)
+            )
         else:
             class_weight = None
         loss_cls = self.loss_weight * self.cls_criterion(
