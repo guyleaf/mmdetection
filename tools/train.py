@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import logging
-import os
 import os.path as osp
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
+from torch.distributed.elastic.multiprocessing.errors import record
 
 from mmdet.utils import setup_cache_size_limit_of_dynamo
 
@@ -51,14 +51,14 @@ def parse_args():
     # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
     # will pass the `--local-rank` parameter to `tools/train.py` instead
     # of `--local_rank`.
-    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
+    # parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
     args = parser.parse_args()
-    if 'LOCAL_RANK' not in os.environ:
-        os.environ['LOCAL_RANK'] = str(args.local_rank)
+    # if 'LOCAL_RANK' not in os.environ:
+    #     os.environ['LOCAL_RANK'] = str(args.local_rank)
 
     return args
 
-
+@record
 def main():
     args = parse_args()
 

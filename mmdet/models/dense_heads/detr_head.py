@@ -13,8 +13,14 @@ from torch import Tensor
 from mmdet.registry import MODELS, TASK_UTILS
 from mmdet.structures import SampleList
 from mmdet.structures.bbox import bbox_cxcywh_to_xyxy, bbox_xyxy_to_cxcywh
-from mmdet.utils import (ConfigType, InstanceList, OptInstanceList,
-                         OptMultiConfig, reduce_mean)
+from mmdet.utils import (
+    ConfigType,
+    InstanceList,
+    OptInstanceList,
+    OptMultiConfig,
+    reduce_mean,
+)
+
 from ..utils import multi_apply
 
 
@@ -76,7 +82,7 @@ class DETRHead(BaseModule):
         self.bg_cls_weight = 0
         self.sync_cls_avg_factor = sync_cls_avg_factor
         class_weight = loss_cls.get('class_weight', None)
-        if class_weight is not None and (self.__class__ is DETRHead):
+        if class_weight is not None and issubclass(self.__class__, DETRHead):
             assert isinstance(class_weight, float), 'Expected ' \
                 'class_weight to have type float. Found ' \
                 f'{type(class_weight)}.'
